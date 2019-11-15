@@ -3533,6 +3533,11 @@ var BP3D;
                 floorTexture.wrapS = THREE.RepeatWrapping;
                 floorTexture.wrapT = THREE.RepeatWrapping;
                 floorTexture.repeat.set(1, 1);
+                
+                //PRJCARGO: v71 upgrade fix for issue:   THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.
+                // Fix @ https://discourse.threejs.org/t/warning-from-threejs-image-is-not-power-of-two/7085
+                floorTexture.minFilter = THREE.LinearFilter;
+
                 var floorMaterialTop = new THREE.MeshPhongMaterial({
                     map: floorTexture,
                     side: THREE.DoubleSide,
@@ -3684,6 +3689,11 @@ var BP3D;
                 var url = textureData.url;
                 var scale = textureData.scale;
                 texture = THREE.ImageUtils.loadTexture(url, null, callback);
+                 //PRJCARGO: v71 upgrade fix for issue:   THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.
+                // Fix @ https://discourse.threejs.org/t/warning-from-threejs-image-is-not-power-of-two/7085
+                texture.minFilter = THREE.LinearFilter;
+
+                texture.minFilter = THREE.LinearFilter;
                 if (!stretch) {
                     var height = wall.height;
                     var width = edge.interiorDistance();
