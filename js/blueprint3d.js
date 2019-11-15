@@ -178,12 +178,13 @@ var BP3D;
               @param startY Y start coord for raycast
             */
             Utils.pointInPolygon = function (x, y, corners, startX, startY) {
+                var tI;
                 startX = startX || 0;
                 startY = startY || 0;
                 //ensure that point(startX, startY) is outside the polygon consists of corners
                 var tMinX = 0, tMinY = 0;
                 if (startX === undefined || startY === undefined) {
-                    for (var tI = 0; tI < corners.length; tI++) {
+                    for ( tI = 0; tI < corners.length; tI++) {
                         tMinX = Math.min(tMinX, corners[tI].x);
                         tMinY = Math.min(tMinX, corners[tI].y);
                     }
@@ -191,7 +192,7 @@ var BP3D;
                     startY = tMinY - 10;
                 }
                 var tIntersects = 0;
-                for (var tI = 0; tI < corners.length; tI++) {
+                for ( tI = 0; tI < corners.length; tI++) {
                     var tFirstCorner = corners[tI], tSecondCorner;
                     if (tI == corners.length - 1) {
                         tSecondCorner = corners[0];
@@ -498,12 +499,12 @@ var BP3D;
                     this.setScale(scale.x, scale.y, scale.z);
                 }
             }
-            ;
+
             /** */
             Item.prototype.remove = function () {
                 this.scene.removeItem(this);
             };
-            ;
+
             /** */
             Item.prototype.resize = function (height, width, depth) {
                 var x = width / this.getWidth();
@@ -520,7 +521,7 @@ var BP3D;
                 this.resized();
                 this.scene.needsUpdate = true;
             };
-            ;
+
             /** */
             Item.prototype.setFixed = function (fixed) {
                 this.fixed = fixed;
@@ -543,37 +544,37 @@ var BP3D;
                 this.hover = true;
                 this.updateHighlight();
             };
-            ;
+
             /** */
             Item.prototype.mouseOff = function () {
                 this.hover = false;
                 this.updateHighlight();
             };
-            ;
+
             /** */
             Item.prototype.setSelected = function () {
                 this.selected = true;
                 this.updateHighlight();
             };
-            ;
+
             /** */
             Item.prototype.setUnselected = function () {
                 this.selected = false;
                 this.updateHighlight();
             };
-            ;
+
             /** intersection has attributes point (vec3) and object (THREE.Mesh) */
             Item.prototype.clickPressed = function (intersection) {
                 this.dragOffset.copy(intersection.point).sub(this.position);
             };
-            ;
+
             /** */
             Item.prototype.clickDragged = function (intersection) {
                 if (intersection) {
                     this.moveToPosition(intersection.point.sub(this.dragOffset), intersection);
                 }
             };
-            ;
+
             /** */
             Item.prototype.rotate = function (intersection) {
                 if (intersection) {
@@ -599,7 +600,7 @@ var BP3D;
                     this.hideError();
                 }
             };
-            ;
+
             /**
              * Returns an array of planes to use other than the ground plane
              * for passing intersection to clickPressed and clickDragged
@@ -683,7 +684,7 @@ var BP3D;
                 glow.scale.copy(this.scale);
                 return glow;
             };
-            ;
+
             return Item;
         })(THREE.Mesh);
         Items.Item = Item;
@@ -796,10 +797,11 @@ var BP3D;
             };
             /** Removes all walls. */
             Corner.prototype.removeAll = function () {
-                for (var i = 0; i < this.wallStarts.length; i++) {
+                var i;
+                for ( i = 0; i < this.wallStarts.length; i++) {
                     this.wallStarts[i].remove();
                 }
-                for (var i = 0; i < this.wallEnds.length; i++) {
+                for ( i = 0; i < this.wallEnds.length; i++) {
                     this.wallEnds[i].remove();
                 }
                 this.remove();
@@ -825,10 +827,11 @@ var BP3D;
              */
             Corner.prototype.adjacentCorners = function () {
                 var retArray = [];
-                for (var i = 0; i < this.wallStarts.length; i++) {
+                var i;
+                for ( i = 0; i < this.wallStarts.length; i++) {
                     retArray.push(this.wallStarts[i].getEnd());
                 }
-                for (var i = 0; i < this.wallEnds.length; i++) {
+                for ( i = 0; i < this.wallEnds.length; i++) {
                     retArray.push(this.wallEnds[i].getStart());
                 }
                 return retArray;
@@ -838,12 +841,13 @@ var BP3D;
              * @returns True in case of connection.
              */
             Corner.prototype.isWallConnected = function (wall) {
-                for (var i = 0; i < this.wallStarts.length; i++) {
+                var i;
+                for ( i = 0; i < this.wallStarts.length; i++) {
                     if (this.wallStarts[i] == wall) {
                         return true;
                     }
                 }
-                for (var i = 0; i < this.wallEnds.length; i++) {
+                for ( i = 0; i < this.wallEnds.length; i++) {
                     if (this.wallEnds[i] == wall) {
                         return true;
                     }
@@ -932,11 +936,12 @@ var BP3D;
                 // update position to other corner's
                 this.x = corner.x;
                 this.y = corner.y;
+                var i ;
                 // absorb the other corner's wallStarts and wallEnds
-                for (var i = corner.wallStarts.length - 1; i >= 0; i--) {
+                for ( i = corner.wallStarts.length - 1; i >= 0; i--) {
                     corner.wallStarts[i].setStart(this);
                 }
-                for (var i = corner.wallEnds.length - 1; i >= 0; i--) {
+                for ( i = corner.wallEnds.length - 1; i >= 0; i--) {
                     corner.wallEnds[i].setEnd(this);
                 }
                 // delete the other corner
@@ -947,7 +952,8 @@ var BP3D;
             Corner.prototype.mergeWithIntersected = function () {
                 //console.log('mergeWithIntersected for object: ' + this.type);
                 // check corners
-                for (var i = 0; i < this.floorplan.getCorners().length; i++) {
+                var i;
+                for ( i = 0; i < this.floorplan.getCorners().length; i++) {
                     var corner = this.floorplan.getCorners()[i];
                     if (this.distanceFromCorner(corner) < cornerTolerance && corner != this) {
                         this.combineWithCorner(corner);
@@ -955,7 +961,7 @@ var BP3D;
                     }
                 }
                 // check walls
-                for (var i = 0; i < this.floorplan.getWalls().length; i++) {
+                for ( i = 0; i < this.floorplan.getWalls().length; i++) {
                     var wall = this.floorplan.getWalls()[i];
                     if (this.distanceFromWall(wall) < cornerTolerance && !this.isWallConnected(wall)) {
                         // update position to be on wall
@@ -976,7 +982,8 @@ var BP3D;
                 // delete the wall between these corners, if it exists
                 var wallEndpoints = {};
                 var wallStartpoints = {};
-                for (var i = this.wallStarts.length - 1; i >= 0; i--) {
+                var i;
+                for ( i = this.wallStarts.length - 1; i >= 0; i--) {
                     if (this.wallStarts[i].getEnd() === this) {
                         // remove zero length wall 
                         this.wallStarts[i].remove();
@@ -989,7 +996,7 @@ var BP3D;
                         wallEndpoints[this.wallStarts[i].getEnd().id] = true;
                     }
                 }
-                for (var i = this.wallEnds.length - 1; i >= 0; i--) {
+                for ( i = this.wallEnds.length - 1; i >= 0; i--) {
                     if (this.wallEnds[i].getStart() === this) {
                         // removed zero length wall 
                         this.wallEnds[i].remove();
@@ -1204,29 +1211,38 @@ var BP3D;
              */
             HalfEdge.prototype.halfAngleVector = function (v1, v2) {
                 // make the best of things if we dont have prev or next
+                var v1startX;
+                var v1startY;
+                var v1endX ;
+                var v1endY ;
+                var v2startX;
+                var v2startY;
+                var v2endX ;
+                var v2endY ;
+
                 if (!v1) {
-                    var v1startX = v2.getStart().x - (v2.getEnd().x - v2.getStart().x);
-                    var v1startY = v2.getStart().y - (v2.getEnd().y - v2.getStart().y);
-                    var v1endX = v2.getStart().x;
-                    var v1endY = v2.getStart().y;
+                     v1startX = v2.getStart().x - (v2.getEnd().x - v2.getStart().x);
+                     v1startY = v2.getStart().y - (v2.getEnd().y - v2.getStart().y);
+                     v1endX = v2.getStart().x;
+                     v1endY = v2.getStart().y;
                 }
                 else {
-                    var v1startX = v1.getStart().x;
-                    var v1startY = v1.getStart().y;
-                    var v1endX = v1.getEnd().x;
-                    var v1endY = v1.getEnd().y;
+                     v1startX = v1.getStart().x;
+                     v1startY = v1.getStart().y;
+                     v1endX = v1.getEnd().x;
+                     v1endY = v1.getEnd().y;
                 }
                 if (!v2) {
-                    var v2startX = v1.getEnd().x;
-                    var v2startY = v1.getEnd().y;
-                    var v2endX = v1.getEnd().x + (v1.getEnd().x - v1.getStart().x);
-                    var v2endY = v1.getEnd().y + (v1.getEnd().y - v1.getStart().y);
+                     v2startX = v1.getEnd().x;
+                     v2startY = v1.getEnd().y;
+                     v2endX = v1.getEnd().x + (v1.getEnd().x - v1.getStart().x);
+                     v2endY = v1.getEnd().y + (v1.getEnd().y - v1.getStart().y);
                 }
                 else {
-                    var v2startX = v2.getStart().x;
-                    var v2startY = v2.getStart().y;
-                    var v2endX = v2.getEnd().x;
-                    var v2endY = v2.getEnd().y;
+                     v2startX = v2.getStart().x;
+                     v2startY = v2.getStart().y;
+                     v2endX = v2.getEnd().x;
+                     v2endY = v2.getEnd().y;
                 }
                 // CCW angle between edges
                 var theta = BP3D.Core.Utils.angle2pi(v1startX - v1endX, v1startY - v1endY, v2endX - v1endX, v2endY - v1endY);
@@ -1523,6 +1539,7 @@ var BP3D;
             Room.prototype.updateWalls = function () {
                 var prevEdge = null;
                 var firstEdge = null;
+                var edge;
                 for (var i = 0; i < this.corners.length; i++) {
                     var firstCorner = this.corners[i];
                     var secondCorner = this.corners[(i + 1) % this.corners.length];
@@ -1530,10 +1547,10 @@ var BP3D;
                     var wallTo = firstCorner.wallTo(secondCorner);
                     var wallFrom = firstCorner.wallFrom(secondCorner);
                     if (wallTo) {
-                        var edge = new Model.HalfEdge(this, wallTo, true);
+                         edge = new Model.HalfEdge(this, wallTo, true);
                     }
                     else if (wallFrom) {
-                        var edge = new Model.HalfEdge(this, wallFrom, false);
+                         edge = new Model.HalfEdge(this, wallFrom, false);
                     }
                     else {
                         // something horrible has happened
@@ -1681,9 +1698,9 @@ var BP3D;
                 var _this = this;
                 var corner = new Model.Corner(this, x, y, id);
                 this.corners.push(corner);
-                corner.fireOnDelete(function () {
-                    _this.removeCorner;
-                });
+                // corner.fireOnDelete(function () {
+                //     _this.removeCorner;
+                // });
                 this.new_corner_callbacks.fire(corner);
                 return corner;
             };
@@ -1901,6 +1918,7 @@ var BP3D;
                 function _removeDuplicateRooms(roomArray) {
                     var results = [];
                     var lookup = {};
+                    var str;
                     var hashFunc = function (corner) {
                         return corner.id;
                     };
@@ -1911,7 +1929,7 @@ var BP3D;
                         var room = roomArray[i];
                         for (var j = 0; j < room.length; j++) {
                             var roomShift = BP3D.Core.Utils.cycle(room, j);
-                            var str = BP3D.Core.Utils.map(roomShift, hashFunc).join(sep);
+                             str = BP3D.Core.Utils.map(roomShift, hashFunc).join(sep);
                             if (lookup.hasOwnProperty(str)) {
                                 add = false;
                             }
@@ -2011,7 +2029,7 @@ var BP3D;
             function FloorItem(model, metadata, geometry, material, position, rotation, scale) {
                 _super.call(this, model, metadata, geometry, material, position, rotation, scale);
             }
-            ;
+
             /** */
             FloorItem.prototype.placeInRoom = function () {
                 if (!this.position_set) {
@@ -2022,7 +2040,7 @@ var BP3D;
                     this.position.y = 0.5 * (this.geometry.boundingBox.max.y - this.geometry.boundingBox.min.y);
                 }
             };
-            ;
+
             /** Take action after a resize */
             FloorItem.prototype.resized = function () {
                 this.position.y = this.halfSize.y;
@@ -2046,7 +2064,8 @@ var BP3D;
                 // check if we are in a room
                 var rooms = this.model.floorplan.getRooms();
                 var isInARoom = false;
-                for (var i = 0; i < rooms.length; i++) {
+                var i;
+                for ( i = 0; i < rooms.length; i++) {
                     if (BP3D.Core.Utils.pointInPolygon(vec3.x, vec3.z, rooms[i].interiorCorners) &&
                         !BP3D.Core.Utils.polygonPolygonIntersect(corners, rooms[i].interiorCorners)) {
                         isInARoom = true;
@@ -2063,9 +2082,8 @@ var BP3D;
                     
                     
                     var objects = this.model.scene.items;
-                    console.log(Items);
-                    for (var i = 0; i < objects.length; i++) {
-                        console.log("hi "+ Items);
+
+                    for ( i = 0; i < objects.length; i++) {
                         //PRJCARGO:DISABLED TO PLACE THE NEW CARTON OUTSIDE THE CARTON 
                         if (objects[i] === this /*|| !objects[i].obstructFloorMoves */) {
                             continue;
@@ -2127,7 +2145,7 @@ var BP3D;
                 this.backVisible = false;
                 this.allowRotate = false;
             }
-            ;
+
             /** Get the closet wall edge.
              * @returns The wall edge.
              */
@@ -2197,7 +2215,7 @@ var BP3D;
                     this.redrawWall();
                 }
             };
-            ;
+
             /** */
             WallItem.prototype.moveToPosition = function (vec3, intersection) {
                 this.changeWallEdge(intersection.object.edge);
@@ -2292,7 +2310,7 @@ var BP3D;
                 _super.call(this, model, metadata, geometry, material, position, rotation, scale);
                 this.addToWall = true;
             }
-            ;
+
             /** */
             InWallItem.prototype.getWallOffset = function () {
                 // fudge factor so it saves to the right wall
@@ -2318,7 +2336,7 @@ var BP3D;
                 _super.call(this, model, metadata, geometry, material, position, rotation, scale);
                 this.boundToFloor = true;
             }
-            ;
+
             return InWallFloorItem;
         })(Items.InWallItem);
         Items.InWallFloorItem = InWallFloorItem;
@@ -2340,7 +2358,7 @@ var BP3D;
                 this.obstructFloorMoves = true;
                 this.receiveShadow = true;
             }
-            ;
+
             return OnFloorItem;
         })(Items.FloorItem);
         Items.OnFloorItem = OnFloorItem;
@@ -2361,7 +2379,7 @@ var BP3D;
                 _super.call(this, model, metadata, geometry, material, position, rotation, scale);
                 this.boundToFloor = true;
             }
-            ;
+
             return WallFloorItem;
         })(Items.WallItem);
         Items.WallFloorItem = WallFloorItem;
@@ -3104,13 +3122,7 @@ var BP3D;
         Three.Controller = function (three, model, camera, element, controls, hud) {
             var scope = this;
             this.enabled = true;
-            var three = three;
-            var model = model;
             var scene = model.scene;
-            var element = element;
-            var camera = camera;
-            var controls = controls;
-            var hud = hud;
             var plane; // ground plane used for intersection testing
             var mouse;
             var intersectedObject;
@@ -3180,7 +3192,7 @@ var BP3D;
             function setGroundPlane() {
                 // ground plane used to find intersections
                 var size = 10000;
-                plane = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial());
+                plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(size, size), new THREE.MeshBasicMaterial());
                 plane.rotation.x = -Math.PI / 2;
                 plane.visible = false;
                 scene.add(plane);
@@ -3209,7 +3221,7 @@ var BP3D;
             }
             function mouseMoveEvent(event) {
                 if (scope.enabled) {
-                    event.preventDefault();
+                    /*event.preventDefault()*/
                     mouseMoved = true;
                     mouse.x = event.clientX;
                     mouse.y = event.clientY;
@@ -3238,7 +3250,7 @@ var BP3D;
             };
             function mouseDownEvent(event) {
                 if (scope.enabled) {
-                    event.preventDefault();
+                    /*event.preventDefault()*/
                     mouseMoved = false;
                     mouseDown = true;
                     switch (state) {
@@ -3314,6 +3326,7 @@ var BP3D;
                 switch (state) {
                     case states.UNSELECTED:
                         scope.setSelectedObject(null);
+                        break;
                     case states.SELECTED:
                         controls.enabled = true;
                         break;
@@ -3499,7 +3512,6 @@ var BP3D;
         Three.Floor = function (scene, room) {
             var scope = this;
             this.room = room;
-            var scene = scene;
             var floorPlane = null;
             var roofPlane = null;
             init();
@@ -3584,9 +3596,6 @@ var BP3D;
     (function (Three) {
         Three.Edge = function (scene, edge, controls) {
             var scope = this;
-            var scene = scene;
-            var edge = edge;
-            var controls = controls;
             var wall = edge.wall;
             var front = edge.front;
             var planes = [];
@@ -3868,8 +3877,8 @@ var BP3D;
     (function (Three) {
         Three.Lights = function (scene, floorplan) {
             var scope = this;
-            var scene = scene;
-            var floorplan = floorplan;
+            this.scene = scene;
+            this.floorplan = floorplan;
             var tol = 1;
             var height = 300; // TODO: share with Blueprint.Wall
             var dirLight;
@@ -3927,7 +3936,6 @@ var BP3D;
     (function (Three) {
         Three.Skybox = function (scene) {
             var scope = this;
-            var scene = scene;
             var topColor = 0xffffff; //0xD8ECF9
             var bottomColor = 0xe9e9e9; //0xf9f9f9;//0x565e63
             var verticalOffset = 500;
@@ -4178,7 +4186,7 @@ var BP3D;
                 if (scope.enabled === false) {
                     return;
                 }
-                event.preventDefault();
+                /*event.preventDefault()*/
                 if (event.button === 0) {
                     if (scope.noRotate === true) {
                         return;
@@ -4201,13 +4209,13 @@ var BP3D;
                     panStart.set(event.clientX, event.clientY);
                 }
                 // Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
-                scope.domElement.addEventListener('mousemove', onMouseMove, false);
-                scope.domElement.addEventListener('mouseup', onMouseUp, false);
+                scope.domElement.addEventListener('mousemove', onMouseMove, { passive: true });
+                scope.domElement.addEventListener('mouseup', onMouseUp, { passive: true });
             }
             function onMouseMove(event) {
                 if (scope.enabled === false)
                     return;
-                event.preventDefault();
+                /*event.preventDefault()*/
                 var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
                 if (state === STATE.ROTATE) {
                     if (scope.noRotate === true)
@@ -4332,7 +4340,7 @@ var BP3D;
                 if (scope.enabled === false) {
                     return;
                 }
-                event.preventDefault();
+                /*event.preventDefault()*/
                 event.stopPropagation();
                 var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
                 switch (event.touches.length) {
@@ -4393,14 +4401,14 @@ var BP3D;
                 }
                 state = STATE.NONE;
             }
-            this.domElement.addEventListener('contextmenu', function (event) { event.preventDefault(); }, false);
-            this.domElement.addEventListener('mousedown', onMouseDown, false);
-            this.domElement.addEventListener('mousewheel', onMouseWheel, false);
-            this.domElement.addEventListener('DOMMouseScroll', onMouseWheel, false); // firefox
-            this.domElement.addEventListener('touchstart', touchstart, false);
-            this.domElement.addEventListener('touchend', touchend, false);
-            this.domElement.addEventListener('touchmove', touchmove, false);
-            window.addEventListener('keydown', onKeyDown, false);
+            this.domElement.addEventListener('contextmenu', function (event) { /*event.preventDefault()*/ }, { passive: true });
+            this.domElement.addEventListener('mousedown', onMouseDown, { passive: true });
+            this.domElement.addEventListener('mousewheel', onMouseWheel, { passive: true });
+            this.domElement.addEventListener('DOMMouseScroll', onMouseWheel, { passive: true }); // firefox
+            this.domElement.addEventListener('touchstart', touchstart, { passive: true });
+            this.domElement.addEventListener('touchend', touchend, { passive: true });
+            this.domElement.addEventListener('touchmove', touchmove, { passive: true });
+            window.addEventListener('keydown', onKeyDown, { passive: true });
         };
     })(Three = BP3D.Three || (BP3D.Three = {}));
 })(BP3D || (BP3D = {}));
@@ -4415,7 +4423,7 @@ var BP3D;
          */
         Three.HUD = function (three) {
             var scope = this;
-            var three = three;
+//            var three = three;
             var scene = new THREE.Scene();
             var selectedItem = null;
             var rotating = false;
@@ -4552,7 +4560,7 @@ var BP3D;
                 resize: true,
                 pushHref: false,
                 spin: true,
-                spinSpeed: .00002,
+                spinSpeed: 0.00002,
                 clickPan: true,
                 canMoveFixedItems: false
             };
@@ -4563,12 +4571,11 @@ var BP3D;
                 }
             }
             var scene = model.scene;
-            var model = model;
             this.element = $(element);
             var domElement;
             var camera;
             var renderer;
-            this.controls;
+           // this.controls;
             var canvas;
             var controller;
             var floorplan;
@@ -4579,10 +4586,10 @@ var BP3D;
             var mouseOver = false;
             var hasClicked = false;
             var hud;
-            this.heightMargin;
-            this.widthMargin;
-            this.elementHeight;
-            this.elementWidth;
+            // this.heightMargin;
+            // this.widthMargin;
+            // this.elementHeight;
+            // this.elementWidth;
             this.itemSelectedCallbacks = $.Callbacks(); // item
             this.itemUnselectedCallbacks = $.Callbacks();
             this.wallClicked = $.Callbacks(); // wall
@@ -4597,7 +4604,7 @@ var BP3D;
                     preserveDrawingBuffer: true // required to support .toDataURL()
                 });
                 renderer.autoClear = false,
-                    renderer.shadowMapEnabled = true;
+                renderer.shadowMapEnabled = true;
                 renderer.shadowMapSoft = true;
                 renderer.shadowMapType = THREE.PCFSoftShadowMap;
                 var skybox = new Three.Skybox(scene);
@@ -4680,7 +4687,7 @@ var BP3D;
                 }
                 lastRender = Date.now();
             }
-            ;
+
             function animate() {
                 var delay = 50;
                 setTimeout(function () {
@@ -4688,7 +4695,7 @@ var BP3D;
                 }, delay);
                 render();
             }
-            ;
+
             this.rotatePressed = function () {
                 controller.rotatePressed();
             };
@@ -4777,31 +4784,31 @@ var BP3D;
         /** Enumeration of log contexts. */
         (function (ELogContext) {
             /** Log nothing. */
-            ELogContext[ELogContext["None"] = 0] = "None";
+            ELogContext[ 0] = "None";
             /** Log all. */
-            ELogContext[ELogContext["All"] = 1] = "All";
+            ELogContext[ 1] = "All";
             /** 2D interaction */
-            ELogContext[ELogContext["Interaction2d"] = 2] = "Interaction2d";
+            ELogContext[ 2] = "Interaction2d";
             /** Interior items */
-            ELogContext[ELogContext["Item"] = 3] = "Item";
+            ELogContext[3] = "Item";
             /** Wall (connectivity) */
-            ELogContext[ELogContext["Wall"] = 4] = "Wall";
+            ELogContext[ 4] = "Wall";
             /** Room(s) */
-            ELogContext[ELogContext["Room"] = 5] = "Room";
+            ELogContext[ 5] = "Room";
         })(Core.ELogContext || (Core.ELogContext = {}));
         var ELogContext = Core.ELogContext;
         /** Enumeration of log levels. */
         (function (ELogLevel) {
             /** An information. */
-            ELogLevel[ELogLevel["Information"] = 0] = "Information";
+            ELogLevel[ 0] = "Information";
             /** A warning. */
-            ELogLevel[ELogLevel["Warning"] = 1] = "Warning";
+            ELogLevel[ 1] = "Warning";
             /** An error. */
-            ELogLevel[ELogLevel["Error"] = 2] = "Error";
+            ELogLevel[ 2] = "Error";
             /** A fatal error. */
-            ELogLevel[ELogLevel["Fatal"] = 3] = "Fatal";
+            ELogLevel[ 3] = "Fatal";
             /** A debug message. */
-            ELogLevel[ELogLevel["Debug"] = 4] = "Debug";
+            ELogLevel[ 4] = "Debug";
         })(Core.ELogLevel || (Core.ELogLevel = {}));
         var ELogLevel = Core.ELogLevel;
         /** The current log context. To be set when initializing the Application. */
@@ -4813,9 +4820,7 @@ var BP3D;
          * @returns If this context/levels is currently logged.
          */
         function isLogging(context, level) {
-            return Core.logContext === ELogContext.All || Core.logContext == context
-                || level === ELogLevel.Warning || level === ELogLevel.Error
-                || level === ELogLevel.Fatal;
+            return Core.logContext === ELogContext.All || Core.logContext == context || level === ELogLevel.Warning || level === ELogLevel.Error  || level === ELogLevel.Fatal;
         }
         Core.isLogging = isLogging;
         /** Log the passed message in the context and with given level.
@@ -4871,6 +4876,5 @@ var BP3D;
         Core.Version = Version;
     })(Core = BP3D.Core || (BP3D.Core = {}));
 })(BP3D || (BP3D = {}));
-console.log("Blueprint3D " + BP3D.Core.Version.getInformalVersion()
-    + " (" + BP3D.Core.Version.getTechnicalVersion() + ")");
+console.log("Blueprint3D " + BP3D.Core.Version.getInformalVersion() + " (" + BP3D.Core.Version.getTechnicalVersion() + ")");
 //# sourceMappingURL=blueprint3d.js.map
